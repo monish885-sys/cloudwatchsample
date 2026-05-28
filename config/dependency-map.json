@@ -1,0 +1,237 @@
+{
+  "version": 1,
+  "defaultLogGroupPrefix": "/eks/prod/default/",
+  "logGroupConventions": {
+    "microservices": "/eks/prod/default/",
+    "lambda": "/aws/lambda/",
+    "rds": "/aws/rds/instance/",
+    "eksCluster": "/aws/eks/"
+  },
+  "groups": [
+    {
+      "id": "clientFrontends",
+      "label": "Client Frontends (Entry Points)",
+      "services": [
+        {
+          "name": "school-app-web",
+          "keywords": ["school-app-web", "school app web", "school app", "school-app"],
+          "logGroupPrefix": "/eks/prod/default/school-app-web/",
+          "downstreamDependencies": ["kong-ingress"],
+          "infrastructureDependencies": []
+        },
+        {
+          "name": "parent-app-web",
+          "keywords": ["parent-app-web", "parent app web", "parent app", "parent-app"],
+          "logGroupPrefix": "/eks/prod/default/parent-app-web/",
+          "downstreamDependencies": ["kong-ingress"],
+          "infrastructureDependencies": []
+        },
+        {
+          "name": "learner-app-web",
+          "keywords": ["learner-app-web", "learner app", "student ui", "student-ui", "learner-app"],
+          "logGroupPrefix": "/eks/prod/default/learner-app-web/",
+          "downstreamDependencies": ["kong-ingress"],
+          "infrastructureDependencies": []
+        },
+        {
+          "name": "admin-content-ui",
+          "keywords": ["admin-content-ui", "admin content ui", "content ui", "admin ui"],
+          "logGroupPrefix": "/eks/prod/default/admin-content-ui/",
+          "downstreamDependencies": ["kong-ingress"],
+          "infrastructureDependencies": []
+        }
+      ]
+    },
+    {
+      "id": "ingress",
+      "label": "Ingress & Routing",
+      "services": [
+        {
+          "name": "kong-ingress",
+          "keywords": ["kong", "nginx ingress", "nginx-ingress", "api gateway", "kong-ingress"],
+          "logGroupPrefix": "/eks/prod/default/kong-ingress/",
+          "downstreamDependencies": [
+            "beam-resource-api",
+            "school-admin-service",
+            "ai-tutor-service",
+            "parent-app-service",
+            "teacher-dashboard-service"
+          ],
+          "infrastructureDependencies": []
+        }
+      ]
+    },
+    {
+      "id": "coreMicroservices",
+      "label": "Core Microservices Cluster",
+      "services": [
+        {
+          "name": "beam-resource-api",
+          "keywords": ["beam-resource-api", "beam resource api", "beam-resource", "beam api"],
+          "logGroupPrefix": "/eks/prod/default/beam-resource-api/",
+          "downstreamDependencies": ["ai-tutor-service", "parent-app-service"],
+          "infrastructureDependencies": []
+        },
+        {
+          "name": "school-admin-service",
+          "keywords": ["school-admin-service", "school admin service", "school-admin"],
+          "logGroupPrefix": "/eks/prod/default/school-admin-service/",
+          "downstreamDependencies": ["question-bank-service", "auth-service"],
+          "infrastructureDependencies": []
+        },
+        {
+          "name": "ai-tutor-service",
+          "keywords": ["ai-tutor-service", "ai tutor service", "ai-tutor", "aitutor", "tutor service"],
+          "logGroupPrefix": "/eks/prod/default/ai-tutor-service/",
+          "downstreamDependencies": [
+            "innerscore-chatbot",
+            "question-bank-service",
+            "auth-service",
+            "event-service"
+          ],
+          "infrastructureDependencies": [
+            "OpenAI API",
+            "ElevenLabs",
+            "Kafka school-ai-producer-topic",
+            "Kafka journey-tracker"
+          ]
+        },
+        {
+          "name": "innerscore-chatbot",
+          "keywords": ["innerscore-chatbot", "innerscore chatbot", "innerscore", "chatbot service"],
+          "logGroupPrefix": "/eks/prod/default/innerscore-chatbot/",
+          "downstreamDependencies": [],
+          "infrastructureDependencies": ["MongoDB"]
+        },
+        {
+          "name": "question-bank-service",
+          "keywords": ["question-bank-service", "question bank", "question-bank", "qbank"],
+          "logGroupPrefix": "/eks/prod/default/question-bank-service/",
+          "downstreamDependencies": [],
+          "infrastructureDependencies": ["RDS PostgreSQL", "pinecone"]
+        },
+        {
+          "name": "auth-service",
+          "keywords": ["auth-service", "auth service", "authentication service"],
+          "logGroupPrefix": "/eks/prod/default/auth-service/",
+          "downstreamDependencies": [],
+          "infrastructureDependencies": ["Redis"]
+        },
+        {
+          "name": "event-service",
+          "keywords": ["event-service", "event service", "events service"],
+          "logGroupPrefix": "/eks/prod/default/event-service/",
+          "downstreamDependencies": [],
+          "infrastructureDependencies": ["Kafka event-stream-topic"]
+        },
+        {
+          "name": "parent-app-service",
+          "keywords": ["parent-app-service", "parent app service"],
+          "logGroupPrefix": "/eks/prod/default/parent-app-service/",
+          "downstreamDependencies": ["auth-service"],
+          "infrastructureDependencies": []
+        },
+        {
+          "name": "teacher-dashboard-service",
+          "keywords": [
+            "teacher-dashboard-service",
+            "teacher dashboard",
+            "teacher-dashboard",
+            "dashboard service"
+          ],
+          "logGroupPrefix": "/eks/prod/default/teacher-dashboard-service/",
+          "downstreamDependencies": ["auth-service"],
+          "infrastructureDependencies": []
+        }
+      ]
+    },
+    {
+      "id": "externalApis",
+      "label": "External APIs & Lambda",
+      "services": [
+        {
+          "name": "cognito-lambda",
+          "keywords": ["cognito", "cognito lambda", "cognito-lambda"],
+          "logGroupPrefix": "/aws/lambda/cognito/",
+          "downstreamDependencies": [],
+          "infrastructureDependencies": ["Cognito"]
+        },
+        {
+          "name": "openai-api",
+          "keywords": ["openai", "openai api", "gpt"],
+          "logGroupPrefix": "/eks/prod/default/ai-tutor-service/",
+          "downstreamDependencies": ["ai-tutor-service"],
+          "infrastructureDependencies": ["OpenAI API"]
+        },
+        {
+          "name": "elevenlabs",
+          "keywords": ["elevenlabs", "eleven labs", "tts"],
+          "logGroupPrefix": "/eks/prod/default/ai-tutor-service/",
+          "downstreamDependencies": ["ai-tutor-service"],
+          "infrastructureDependencies": ["ElevenLabs"]
+        }
+      ]
+    },
+    {
+      "id": "eventBroker",
+      "label": "Event Broker (Kafka)",
+      "services": [
+        {
+          "name": "kafka-journey-tracker",
+          "keywords": ["journey-tracker", "journey tracker", "audit logs", "audit-logs"],
+          "logGroupPrefix": "/eks/prod/default/event-service/",
+          "downstreamDependencies": ["event-service"],
+          "infrastructureDependencies": ["Kafka journey-tracker"]
+        },
+        {
+          "name": "kafka-school-ai-producer",
+          "keywords": ["school-ai-producer", "school ai producer", "school-ai-producer-topic"],
+          "logGroupPrefix": "/eks/prod/default/ai-tutor-service/",
+          "downstreamDependencies": ["ai-tutor-service", "event-service"],
+          "infrastructureDependencies": ["Kafka school-ai-producer-topic"]
+        },
+        {
+          "name": "kafka-event-stream",
+          "keywords": ["event-stream", "event stream topic", "event-stream-topic"],
+          "logGroupPrefix": "/eks/prod/default/event-service/",
+          "downstreamDependencies": ["event-service"],
+          "infrastructureDependencies": ["Kafka event-stream-topic"]
+        }
+      ]
+    },
+    {
+      "id": "dataPersistence",
+      "label": "Data & Persistence Tier",
+      "services": [
+        {
+          "name": "mongodb",
+          "keywords": ["mongodb", "mongo db", "mongo"],
+          "logGroupPrefix": "/eks/prod/default/innerscore-chatbot/",
+          "downstreamDependencies": ["innerscore-chatbot"],
+          "infrastructureDependencies": ["MongoDB"]
+        },
+        {
+          "name": "redis",
+          "keywords": ["redis", "elasticache"],
+          "logGroupPrefix": "/eks/prod/default/auth-service/",
+          "downstreamDependencies": ["auth-service"],
+          "infrastructureDependencies": ["Redis"]
+        },
+        {
+          "name": "rds-postgresql",
+          "keywords": ["rds", "postgresql", "postgres", "rds postgresql"],
+          "logGroupPrefix": "/aws/rds/instance/",
+          "downstreamDependencies": ["question-bank-service"],
+          "infrastructureDependencies": ["RDS PostgreSQL"]
+        },
+        {
+          "name": "pinecone",
+          "keywords": ["pinecone", "vector db", "vector database"],
+          "logGroupPrefix": "/eks/prod/default/question-bank-service/",
+          "downstreamDependencies": ["question-bank-service"],
+          "infrastructureDependencies": ["pinecone"]
+        }
+      ]
+    }
+  ]
+}

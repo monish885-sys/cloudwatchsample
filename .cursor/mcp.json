@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "aws-multi-logs": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${workspaceFolder}/index-mini.js"],
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  }
+}

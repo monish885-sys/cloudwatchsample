@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "defaultPrefix": "/eks/prod/default/",
+  "services": [
+    {
+      "keywords": ["user", "user-service", "users"],
+      "logGroupPrefix": "/eks/prod/default/user-service/"
+    },
+    {
+      "keywords": ["payment", "payments"],
+      "logGroupPrefix": "/eks/prod/default/payment-service/"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "predefinedPrompts": [
+    "teacher-dashboard-service 400 on listSectionSubjectsWithTaskStatusCount",
+    "auth-service latency spike for login APIs in last 30m",
+    "ai-tutor-service errors after OpenAI calls"
+  ],
+  "fallbackSuggestedPrompts": [
+    "Show top error signatures in the last 15 minutes",
+    "Correlate app errors with infra findings",
+    "Narrow to a specific trace ID if available"
+  ]
+}

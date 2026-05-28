@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CloudWatch MCP Chat</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+      window.mermaid = mermaid;
+    </script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <h1>CloudWatch Incident Copilot</h1>
+          <p class="subtitle">Professional incident analysis with deterministic evidence</p>
+        </div>
+      </header>
+
+      <section class="conversation" id="conversationArea">
+        <div class="section-title">Response</div>
+        <div id="outputMeta" class="meta"></div>
+        <div id="outputPanel" class="output"></div>
+        <div id="diagramPanel" class="diagram hidden"></div>
+      </section>
+
+      <section class="chip-zone">
+        <div class="section-title">Predefined Prompts</div>
+        <div id="presetChips" class="chips"></div>
+      </section>
+
+      <section class="chip-zone">
+        <div class="section-title">Suggested Next Prompts</div>
+        <div id="suggestedChips" class="chips"></div>
+      </section>
+
+      <section class="composer-wrap">
+        <form id="chatForm" class="chat-form">
+          <textarea
+            id="messageInput"
+            placeholder="Ask about errors, trace IDs, or service impact..."
+            rows="2"
+            required
+          ></textarea>
+          <div class="composer-actions">
+            <button type="submit" id="sendBtn">Analyze Incident</button>
+          </div>
+        </form>
+      </section>
+
+      <details class="diagnostics">
+        <summary>Diagnostics Console</summary>
+        <div id="consolePanel" class="console"></div>
+      </details>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
